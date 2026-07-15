@@ -12,6 +12,7 @@ import { BankProvider } from "./context/BankContext";
 import TopNav from "./components/TopNav";
 import ScrollToTop from "./components/ScrollToTop";
 import AuthProvider from "./components/AuthProvider";
+import SessionGuard from "./components/SessionGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <BankProvider>
+            <SessionGuard />
             <ScrollToTop />
             <div className="app-layout">
               <TopNav />

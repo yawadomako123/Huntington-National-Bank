@@ -19,26 +19,26 @@ export default function Accounts() {
       <div style={{ display: "grid", gap: "1.25rem" }}>
         {accounts.map((account) => (
           <div key={account.id} className="card card-hover">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
-              <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.75rem" }}>
+              <div style={{ minWidth: 0, flex: "1 1 200px" }}>
                 <span className="pill">{label(account.type)}</span>
-                <h3 style={{ margin: "0.6rem 0 0.25rem" }}>{account.name}</h3>
-                <p className="text-secondary" style={{ fontSize: "0.85rem" }}>
+                <h3 style={{ margin: "0.6rem 0 0.25rem", wordBreak: "break-word" }}>{account.name}</h3>
+                <p className="text-secondary" style={{ fontSize: "0.82rem", wordBreak: "break-all" }}>
                   Account {account.accountNumber} · Routing {account.routingNumber}
                 </p>
               </div>
-              <div style={{ textAlign: "right" }}>
-                <p className="text-secondary" style={{ fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              <div style={{ textAlign: "right", flexShrink: 0 }}>
+                <p className="text-secondary" style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   {account.type === "credit" ? "Current Balance" : "Available Balance"}
                 </p>
-                <h2 style={{ color: account.type === "credit" && account.balance < 0 ? "var(--danger)" : "var(--text-primary)", margin: "0.15rem 0" }}>
+                <h2 style={{ color: account.type === "credit" && account.balance < 0 ? "var(--danger)" : "var(--text-primary)", margin: "0.15rem 0", fontSize: "clamp(1.1rem, 5vw, 1.35rem)" }}>
                   {account.type === "credit" && account.balance < 0 ? "−" : ""}${fmt(Math.abs(account.balance))}
                 </h2>
                 {account.apy && (
                   <span className="text-success" style={{ fontSize: "0.8rem", fontWeight: 600 }}>{account.apy}% APY</span>
                 )}
                 {account.creditLimit && (
-                  <span className="text-secondary" style={{ fontSize: "0.8rem" }}>${fmt(account.available)} available of ${fmt(account.creditLimit)}</span>
+                  <span className="text-secondary" style={{ fontSize: "0.78rem", display: "block" }}>${fmt(account.available)} avail. of ${fmt(account.creditLimit)}</span>
                 )}
               </div>
             </div>

@@ -50,7 +50,7 @@ export default function Cards() {
                   <div style={{ position: "absolute", left: "50%", width: "1px", height: "100%", background: "rgba(0,0,0,0.25)" }}></div>
                 </div>
 
-                <div style={{ fontSize: "1.4rem", letterSpacing: "3px", marginBottom: "0.75rem", textShadow: "0 1px 2px rgba(0,0,0,0.4)", fontVariantNumeric: "tabular-nums" }}>
+                <div style={{ fontSize: "clamp(0.9rem, 3.5vw, 1.4rem)", letterSpacing: "clamp(1px, 1vw, 3px)", marginBottom: "0.75rem", textShadow: "0 1px 2px rgba(0,0,0,0.4)", fontVariantNumeric: "tabular-nums", wordBreak: "break-all" }}>
                   {card.cardNumber}
                 </div>
 

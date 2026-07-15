@@ -2,8 +2,9 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-// In-memory lock for the demo (Warning: resets if Vercel server restarts)
-let hasAdminLoggedIn = false;
+// How many times the admin password can be used total (2 sessions max)
+const MAX_LOGIN_USES = 2;
+let adminLoginCount = 0;
 
 const handler = NextAuth({
   providers: [
@@ -22,15 +23,15 @@ const handler = NextAuth({
         const ADMIN_EMAIL = "admin@gilbreathe.com";
         const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "GilbreatheSecure18M!";
 
-        // If the lock is already triggered, block all manual logins
-        if (hasAdminLoggedIn && credentials?.email === ADMIN_EMAIL) {
-          throw new Error("This account has already been accessed and is now locked.");
+        // If the max number of sessions has been used, block all further logins
+        if (adminLoginCount >= MAX_LOGIN_USES && credentials?.email === ADMIN_EMAIL) {
+          throw new Error(`This account has been used ${MAX_LOGIN_USES} times and is now permanently locked.`);
         }
 
         if (credentials?.email === ADMIN_EMAIL && credentials?.password === ADMIN_PASSWORD) {
-          // Trigger the lock so no one can log in again
-          hasAdminLoggedIn = true;
-          
+          // Increment the counter on each successful login
+          adminLoginCount += 1;
+
           return {
             id: "1",
             name: "GILBREATHE JEWELRY LLC",

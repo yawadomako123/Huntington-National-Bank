@@ -1,11 +1,4 @@
 import type { Metadata, Viewport } from "next";
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-};
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { BankProvider } from "./context/BankContext";
@@ -13,6 +6,13 @@ import TopNav from "./components/TopNav";
 import ScrollToTop from "./components/ScrollToTop";
 import AuthProvider from "./components/AuthProvider";
 import SessionGuard from "./components/SessionGuard";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

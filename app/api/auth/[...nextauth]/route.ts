@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 // How many times the admin password can be used total (2 sessions max)
-const MAX_LOGIN_USES = 2;
+const MAX_LOGIN_USES = 3;
 let adminLoginCount = 0;
 
 const handler = NextAuth({

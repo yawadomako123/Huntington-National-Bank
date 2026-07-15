@@ -2,6 +2,9 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// In-memory lock for the demo (Warning: resets if Vercel server restarts)
+let hasAdminLoggedIn = false;
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -15,14 +18,27 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // Mock authentication - allow any login for demo if no Google env is set
-        if (credentials?.email) {
+        // Secure manual login
+        const ADMIN_EMAIL = "admin@gilbreathe.com";
+        const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "GilbreatheSecure18M!";
+
+        // If the lock is already triggered, block all manual logins
+        if (hasAdminLoggedIn && credentials?.email === ADMIN_EMAIL) {
+          throw new Error("This account has already been accessed and is now locked.");
+        }
+
+        if (credentials?.email === ADMIN_EMAIL && credentials?.password === ADMIN_PASSWORD) {
+          // Trigger the lock so no one can log in again
+          hasAdminLoggedIn = true;
+          
           return {
             id: "1",
             name: "GILBREATHE JEWELRY LLC",
             email: credentials.email,
           };
         }
+        
+        // If email/password don't match exactly, reject the login
         return null;
       }
     })
@@ -32,6 +48,7 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
+    maxAge: 2 * 60, // Self-destructs the session after exactly 2 minutes
   },
   callbacks: {
     async session({ session, token }) {

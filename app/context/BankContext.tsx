@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { useSession } from "next-auth/react";
 import { Transaction, transactions as initialTransactions } from "../data/mockData";
 
 export type UserProfile = {
@@ -46,7 +47,7 @@ interface BankContextType {
 
 const BankContext = createContext<BankContextType | undefined>(undefined);
 
-const user: UserProfile = {
+const defaultUser: UserProfile = {
   fullName: "GILBREATHE JEWELRY LLC",
   firstName: "GILBREATHE",
   initials: "GJ",
@@ -56,6 +57,8 @@ const user: UserProfile = {
 };
 
 export function BankProvider({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
+
   const [accounts, setAccounts] = useState<Account[]>([
     { id: "acc_1", name: "GILBREATHE JEWELRY LLC", balance: 18666214.19, available: 18666214.19, type: "checking", accountNumber: "••••1234", routingNumber: "021000322" }
   ]);
@@ -66,6 +69,38 @@ export function BankProvider({ children }: { children: ReactNode }) {
     { id: "card_1", name: "Premium Debit", cardNumber: "**** **** **** 1234", expiry: "12/28", type: "debit", isFrozen: false },
     { id: "card_2", name: "Rewards Credit", cardNumber: "**** **** **** 9012", expiry: "05/27", type: "credit", isFrozen: false }
   ]);
+
+  const [user, setUser] = useState<UserProfile>(defaultUser);
+
+  React.useEffect(() => {
+    if (status === "authenticated") {
+      if (session?.user?.email === "admin@gilbreathe.com") {
+        setAccounts([
+          { id: "acc_1", name: "GILBREATHE JEWELRY LLC", balance: 18666214.19, available: 18666214.19, type: "checking", accountNumber: "••••1234", routingNumber: "021000322" }
+        ]);
+        setTransactions(initialTransactions);
+        setCards([
+          { id: "card_1", name: "Premium Debit", cardNumber: "**** **** **** 1234", expiry: "12/28", type: "debit", isFrozen: false },
+          { id: "card_2", name: "Rewards Credit", cardNumber: "**** **** **** 9012", expiry: "05/27", type: "credit", isFrozen: false }
+        ]);
+        setUser(defaultUser);
+      } else {
+        const firstName = session?.user?.name ? session.user.name.split(" ")[0] : "User";
+        setAccounts([
+          { id: "acc_1", name: session?.user?.name ? `${session.user.name}'s Checking` : "Personal Checking", balance: 0, available: 0, type: "checking", accountNumber: "••••1234", routingNumber: "021000322" }
+        ]);
+        setTransactions([]);
+        setCards([]);
+        setUser({
+          ...defaultUser,
+          fullName: session?.user?.name || "User",
+          firstName: firstName,
+          initials: session?.user?.name ? session.user.name.split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase() : "U",
+          email: session?.user?.email || "",
+        });
+      }
+    }
+  }, [session, status]);
 
   const transferFunds = (fromAccountId: string, toAccountId: string, amount: number, description: string) => {
     setAccounts(prev => prev.map(acc => {

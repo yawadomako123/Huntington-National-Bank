@@ -67,7 +67,7 @@ export default function Home() {
                 Total Available Balance
               </p>
               <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", margin: "0.4rem 0 1.25rem" }}>
-                <span style={{ fontSize: "2.6rem", fontWeight: 800, letterSpacing: "-0.03em" }}>${fmt(totalBalance)}</span>
+                <span style={{ fontSize: "clamp(1.8rem, 8vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.03em", wordBreak: "break-word" }}>${fmt(totalBalance)}</span>
               </div>
               <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
                 <div>
@@ -92,17 +92,17 @@ export default function Home() {
             <div>
               {accounts.map((acc) => (
                 <Link href="/accounts" key={acc.id} className="account-row">
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.9rem", minWidth: 0, paddingRight: "0.5rem" }}>
                     <AccountIcon type={acc.type} />
-                    <div>
-                      <p style={{ fontWeight: 600, fontSize: "0.92rem" }}>{acc.name}</p>
-                      <p className="text-secondary" style={{ fontSize: "0.8rem" }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontWeight: 600, fontSize: "0.92rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
+                      <p className="text-secondary" style={{ fontSize: "0.8rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {acc.type === "credit" ? "Credit Card" : acc.type === "savings" ? "Savings" : "Checking"} · {acc.accountNumber}
                         {acc.apy ? ` · ${acc.apy}% APY` : ""}
                       </p>
                     </div>
                   </div>
-                  <div style={{ textAlign: "right" }}>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
                     <p style={{ fontWeight: 700, fontSize: "1rem", color: acc.type === "credit" ? "var(--danger)" : "var(--text-primary)" }}>
                       {acc.type === "credit" && acc.balance < 0 ? "−" : ""}${fmt(Math.abs(acc.balance))}
                     </p>

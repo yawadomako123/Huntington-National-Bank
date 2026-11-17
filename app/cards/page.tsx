@@ -8,7 +8,7 @@ export default function Cards() {
 
   return (
     <div className="container" style={{ maxWidth: "1000px" }}>
-      <h1 style={{ marginBottom: "0.35rem" }}>Security Center</h1>
+      <h1 style={{ marginBottom: "0.35rem" }}>Card Management</h1>
       <p className="text-secondary" style={{ fontSize: "0.9rem", marginBottom: "1.75rem" }}>
         Manage your cards, freeze them instantly, and stay protected.
       </p>
@@ -23,8 +23,8 @@ export default function Cards() {
               width: "100%",
               aspectRatio: "1.58",
               background: card.type === "credit"
-                ? "linear-gradient(135deg, #013a22 0%, #00693c 100%)"
-                : "linear-gradient(135deg, #004f2d 0%, #16875a 100%)",
+                ? "linear-gradient(135deg, #1a1a1a 0%, #3a0012 100%)"
+                : "linear-gradient(135deg, #a3001f 0%, #e4002b 100%)",
               borderRadius: "16px",
               padding: "1.5rem",
               color: "white",
@@ -37,10 +37,10 @@ export default function Cards() {
               overflow: "hidden",
             }}>
               <div style={{ position: "absolute", top: "-50px", right: "-20px", width: "170px", height: "170px", borderRadius: "50%", background: "rgba(255,255,255,0.06)" }}></div>
-              <div style={{ position: "absolute", bottom: "-70px", right: "40px", width: "140px", height: "140px", borderRadius: "50%", background: "rgba(122,193,66,0.18)" }}></div>
+              <div style={{ position: "absolute", bottom: "-70px", right: "40px", width: "140px", height: "140px", borderRadius: "50%", background: "rgba(255,255,255,0.08)" }}></div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", zIndex: 1 }}>
-                <div style={{ fontSize: "1.15rem", fontWeight: 800, letterSpacing: "1px" }}>VERTEX</div>
+                <div style={{ fontSize: "1.15rem", fontWeight: 800, letterSpacing: "-0.02em" }}>(absa)</div>
                 <div style={{ fontSize: "0.8rem", opacity: 0.85, textTransform: "uppercase", letterSpacing: "1px" }}>{card.type === "credit" ? "Signature" : "Debit"}</div>
               </div>
 

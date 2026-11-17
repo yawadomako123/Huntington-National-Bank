@@ -90,18 +90,18 @@ export default function Statements() {
 
       {/* Tax documents */}
       <div className="card">
-        <h3 style={{ marginBottom: "0.5rem" }}>Tax Documents</h3>
+        <h3 style={{ marginBottom: "0.5rem" }}>Tax &amp; Interest Documents</h3>
         <div className="settings-row">
           <div>
-            <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>1099-INT · 2025</p>
-            <p className="text-secondary" style={{ fontSize: "0.82rem" }}>Interest income · Available Jan 31, 2026</p>
+            <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>Interest Certificate · 2025</p>
+            <p className="text-secondary" style={{ fontSize: "0.82rem" }}>Interest earned · Available Jan 31, 2026</p>
           </div>
           <button className="link-btn">Download</button>
         </div>
         <div className="settings-row">
           <div>
-            <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>1099-INT · 2024</p>
-            <p className="text-secondary" style={{ fontSize: "0.82rem" }}>Interest income · Available Jan 31, 2025</p>
+            <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>Interest Certificate · 2024</p>
+            <p className="text-secondary" style={{ fontSize: "0.82rem" }}>Interest earned · Available Jan 31, 2025</p>
           </div>
           <button className="link-btn">Download</button>
         </div>

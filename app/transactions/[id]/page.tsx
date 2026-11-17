@@ -6,13 +6,15 @@ import { useRouter } from "next/navigation";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Link from "next/link";
+import { withRunningBalance } from "../../data/mockData";
 
 export default function TransactionDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { transactions } = useBank();
+  const { transactions, accounts } = useBank();
   const router = useRouter();
-  
-  const tx = transactions.find(t => t.id === id);
+
+  const primary = accounts.find((a) => a.type !== "credit");
+  const tx = withRunningBalance(transactions, primary?.balance ?? 0).find(t => t.id === id);
 
   if (!tx) {
     return (
@@ -28,8 +30,8 @@ export default function TransactionDetail({ params }: { params: Promise<{ id: st
     
     // Bank Header
     doc.setFontSize(22);
-    doc.setTextColor(0, 114, 80); // Huntington Green approx
-    doc.text("HUNTINGTON NATIONAL BANK", 14, 22);
+    doc.setTextColor(228, 0, 43); // Absa red
+    doc.text("ABSA BANK GHANA", 14, 22);
     
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -47,7 +49,7 @@ export default function TransactionDetail({ params }: { params: Promise<{ id: st
       ["Description", tx.description],
       ["Type", tx.type === "deposit" ? "Money In" : "Money Out"],
       ["Category", tx.category || "Uncategorized"],
-      ["Amount", `$${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`]
+      ["Amount", `GH₵${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`]
     ];
 
     autoTable(doc, {
@@ -55,7 +57,7 @@ export default function TransactionDetail({ params }: { params: Promise<{ id: st
       head: [["Detail", "Information"]],
       body: tableData,
       theme: 'grid',
-      headStyles: { fillColor: [0, 114, 80] },
+      headStyles: { fillColor: [228, 0, 43] },
       styles: { fontSize: 11, cellPadding: 5 }
     });
 
@@ -86,7 +88,7 @@ export default function TransactionDetail({ params }: { params: Promise<{ id: st
             )}
           </div>
           <h2 style={{ fontSize: "2rem", marginBottom: "0.5rem", color: isDeposit ? "var(--success)" : "var(--text-primary)" }}>
-            {isDeposit ? "+" : "−"}${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            {isDeposit ? "+" : "−"}GH₵{tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </h2>
           <p className="text-secondary" style={{ fontSize: "1.1rem" }}>{tx.description}</p>
         </div>
@@ -104,6 +106,12 @@ export default function TransactionDetail({ params }: { params: Promise<{ id: st
             <span className="text-secondary">Category</span>
             <span style={{ fontWeight: 500 }}>{tx.category || "Uncategorized"}</span>
           </div>
+          {typeof tx.balanceAfter === "number" && (
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span className="text-secondary">Balance after</span>
+              <span style={{ fontWeight: 600 }}>GH₵{tx.balanceAfter.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
+          )}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span className="text-secondary">Transaction ID</span>
             <span style={{ fontWeight: 500, fontFamily: "monospace", fontSize: "0.9rem" }}>{tx.id}</span>

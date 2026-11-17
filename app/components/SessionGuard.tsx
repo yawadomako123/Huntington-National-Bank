@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 
-// Session expires after 2 minutes (120 seconds)
-const SESSION_TIMEOUT_MS = 2 * 60 * 1000;
+// Session expires after 30 minutes (dev-friendly while building the reskin)
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
 // Module-level flag — prevents the timer from restarting if the user
 // navigates between pages or if the component re-renders.

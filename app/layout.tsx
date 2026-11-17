@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { BankProvider } from "./context/BankContext";
-import TopNav from "./components/TopNav";
+import BottomNav from "./components/BottomNav";
+import Splash from "./components/Splash";
 import ScrollToTop from "./components/ScrollToTop";
 import AuthProvider from "./components/AuthProvider";
 import SessionGuard from "./components/SessionGuard";
@@ -12,21 +13,17 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#000000",
 };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Huntington National Bank | Online Banking",
-  description: "Huntington National Bank Online Banking Dashboard",
+  title: "Absa | Mobile Banking",
+  description: "Absa mobile banking — accounts, transfers, MoMo, airtime and more.",
 };
 
 export default function RootLayout({
@@ -35,17 +32,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" data-theme="dark">
+      <body className={`${inter.variable}`}>
         <AuthProvider>
           <BankProvider>
+            <Splash />
             <SessionGuard />
             <ScrollToTop />
-            <div className="app-layout">
-              <TopNav />
-              <main className="main-content">
-                {children}
-              </main>
+            <div className="app-shell">
+              <main className="main-content">{children}</main>
+              <BottomNav />
             </div>
           </BankProvider>
         </AuthProvider>

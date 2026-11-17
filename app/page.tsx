@@ -1,193 +1,112 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useBank } from "./context/BankContext";
-import TransactionHistory from "./components/TransactionHistory";
 
-function AccountIcon({ type }: { type: string }) {
-  const map: Record<string, { bg: string; color: string; path: React.ReactNode }> = {
-    checking: {
-      bg: "rgba(0, 105, 60, 0.1)",
-      color: "var(--brand-green)",
-      path: <><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></>,
-    },
-    savings: {
-      bg: "rgba(122, 193, 66, 0.16)",
-      color: "#4d8a1f",
-      path: <><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z" /><line x1="16" y1="11" x2="16" y2="11.01" /></>,
-    },
-    credit: {
-      bg: "rgba(0, 105, 60, 0.1)",
-      color: "var(--brand-green)",
-      path: <><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></>,
-    },
-  };
-  const cfg = map[type] || map.checking;
-  return (
-    <div className="account-icon" style={{ background: cfg.bg, color: cfg.color }}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{cfg.path}</svg>
-    </div>
-  );
-}
+const cedi = (n: number) => `GH₵${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+const quickActions = [
+  {
+    label: "Pay a bill", href: "/bill-pay", cls: "c1",
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2h9l3 3v17l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" /><line x1="9" y1="7" x2="15" y2="7" /><line x1="9" y1="11" x2="15" y2="11" /></svg>,
+  },
+  {
+    label: "Data bundles", href: "/airtime", cls: "c2",
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" /><path d="M11 18h2" /></svg>,
+  },
+  {
+    label: "Airtime", href: "/airtime", cls: "c3",
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 18h.01" /><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M16.5 6.5a4 4 0 0 1 0 5" /></svg>,
+  },
+  {
+    label: "MoMo", href: "/transfers", cls: "c4",
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M10 6h4" /><path d="M9.5 15l2.5-2.5L14.5 15" /></svg>,
+  },
+  {
+    label: "ATM", href: "/atm-locator", cls: "c5",
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /><line x1="7" y1="15" x2="9" y2="15" /></svg>,
+  },
+];
 
 export default function Home() {
-  const { user, accounts, transactions } = useBank();
+  const { user, accounts } = useBank();
+  const [hidden, setHidden] = useState(false);
 
-  const totalBalance = accounts
-    .filter((a) => a.type !== "credit")
-    .reduce((sum, a) => sum + a.balance, 0);
-
-  const monthlyIn = transactions
-    .filter((t) => t.type === "deposit" && new Date(t.date).getMonth() === 6)
-    .reduce((s, t) => s + t.amount, 0);
-  const monthlyOut = transactions
-    .filter((t) => t.type === "withdrawal" && new Date(t.date).getMonth() === 6)
-    .reduce((s, t) => s + t.amount, 0);
-
-  const fmt = (n: number) => n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const current = accounts.filter((a) => a.type !== "credit");
 
   return (
-    <div className="container">
+    <div>
       {/* Greeting */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ marginBottom: "0.25rem" }}>Good afternoon, {user.firstName}</h1>
-        <p className="text-secondary" style={{ fontSize: "0.9rem" }}>
-          Last signed in {new Date(user.lastSignIn).toLocaleString(undefined, { month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}
-        </p>
+      <div style={{ textAlign: "center", padding: "1.6rem 1rem 1.1rem" }}>
+        <h1 style={{ fontSize: "1.6rem", fontWeight: 800 }}>Hello {user.firstName}</h1>
       </div>
 
-      <div className="grid-layout">
-        {/* Left column */}
-        <div>
-          {/* Hero balance */}
-          <div className="hero-panel" style={{ marginBottom: "1.5rem" }}>
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <p style={{ fontSize: "0.8rem", fontWeight: 600, opacity: 0.85, letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                Total Available Balance
-              </p>
-              <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", margin: "0.4rem 0 1.25rem" }}>
-                <span style={{ fontSize: "clamp(1.8rem, 8vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.03em", wordBreak: "break-word" }}>${fmt(totalBalance)}</span>
-              </div>
-              <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-                <div>
-                  <p style={{ fontSize: "0.72rem", opacity: 0.8, textTransform: "uppercase", letterSpacing: "0.05em" }}>Money In · Jul</p>
-                  <p style={{ fontSize: "1.05rem", fontWeight: 700 }}>+${fmt(monthlyIn)}</p>
-                </div>
-                <div>
-                  <p style={{ fontSize: "0.72rem", opacity: 0.8, textTransform: "uppercase", letterSpacing: "0.05em" }}>Money Out · Jul</p>
-                  <p style={{ fontSize: "1.05rem", fontWeight: 700 }}>−${fmt(monthlyOut)}</p>
-                </div>
-              </div>
-            </div>
+      {/* Quick action rail */}
+      <div className="qa-rail" style={{ paddingLeft: "1.1rem", paddingRight: "1.1rem" }}>
+        {quickActions.map((qa) => (
+          <Link key={qa.label} href={qa.href} className="qa-item">
+            <span className={`qa-circle ${qa.cls}`}>{qa.icon}</span>
+            <span className="qa-label">{qa.label}</span>
+          </Link>
+        ))}
+      </div>
+
+      <div className="container" style={{ paddingTop: "1.1rem" }}>
+        {/* Promo card */}
+        <Link href="/explore" className="promo-card" style={{ marginBottom: "2rem" }}>
+          <div style={{ maxWidth: "62%" }}>
+            <h3 style={{ color: "#fff", fontSize: "1.2rem", marginBottom: "0.5rem" }}>Explore Visa benefits and offers</h3>
+            <p style={{ fontSize: "0.85rem", opacity: 0.92 }}>Easily redeem exclusive offers, deals and premium services.</p>
           </div>
-
-          {/* Accounts */}
-          <div className="card" style={{ marginBottom: "1.5rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-              <h3>Your Accounts</h3>
-              <Link href="/accounts" className="text-brand" style={{ fontSize: "0.85rem", fontWeight: 600 }}>View all</Link>
-            </div>
-
-            <div>
-              {accounts.map((acc) => (
-                <Link href="/accounts" key={acc.id} className="account-row">
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.9rem", minWidth: 0, paddingRight: "0.5rem" }}>
-                    <AccountIcon type={acc.type} />
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontWeight: 600, fontSize: "0.92rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
-                      <p className="text-secondary" style={{ fontSize: "0.8rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {acc.type === "credit" ? "Credit Card" : acc.type === "savings" ? "Savings" : "Checking"} · {acc.accountNumber}
-                        {acc.apy ? ` · ${acc.apy}% APY` : ""}
-                      </p>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    <p style={{ fontWeight: 700, fontSize: "1rem", color: acc.type === "credit" ? "var(--danger)" : "var(--text-primary)" }}>
-                      {acc.type === "credit" && acc.balance < 0 ? "−" : ""}${fmt(Math.abs(acc.balance))}
-                    </p>
-                    <p className="text-secondary" style={{ fontSize: "0.75rem" }}>
-                      {acc.type === "credit" ? "Current balance" : "Available"}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          <div style={{
+            width: "92px", height: "58px", borderRadius: "8px",
+            background: "linear-gradient(135deg, #1a1a1a, #333)",
+            display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "0.5rem",
+            flexShrink: 0, border: "1px solid rgba(255,255,255,0.15)",
+          }}>
+            <span style={{ fontSize: "0.6rem", fontWeight: 700 }}>(absa)</span>
+            <span style={{ fontSize: "0.7rem", fontStyle: "italic", fontWeight: 800, alignSelf: "flex-end" }}>VISA</span>
           </div>
+        </Link>
 
-          <TransactionHistory transactions={transactions.slice(0, 6)} />
+        {/* Current and Savings */}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "0.6rem", marginBottom: "1.1rem", position: "relative" }}>
+          <h3 style={{ fontSize: "1.1rem" }}>Current and Savings</h3>
+          <button
+            aria-label={hidden ? "Show balances" : "Hide balances"}
+            onClick={() => setHidden((h) => !h)}
+            style={{ position: "absolute", right: 0, color: "var(--text-secondary)" }}
+          >
+            {hidden ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+            )}
+          </button>
         </div>
 
-        {/* Right column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <div className="card">
-            <h3 style={{ marginBottom: "1.1rem" }}>Quick Actions</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-              <Link href="/transfers" className="quick-action-link">
-                <div className="btn-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+        <div style={{ display: "grid", gap: "1rem" }}>
+          {current.map((acc) => (
+            <Link key={acc.id} href="/accounts" className="acct-card card-hover">
+              <div className="acct-card-head">{acc.name}</div>
+              <div className="acct-card-body">
+                <span className="text-secondary" style={{ fontSize: "1.05rem", letterSpacing: "0.02em" }}>{acc.accountNumber}</span>
+                <div style={{ textAlign: "right" }}>
+                  <p className="text-secondary" style={{ fontSize: "0.8rem", marginBottom: "0.1rem" }}>Available</p>
+                  <p style={{ fontSize: "1.4rem", fontWeight: 800 }}>
+                    {hidden ? "GH₵ ••••" : cedi(acc.available)}
+                  </p>
                 </div>
-                <span style={{ fontSize: "0.82rem", fontWeight: 600 }}>Transfer</span>
-              </Link>
-
-              <Link href="/transfers" className="quick-action-link">
-                <div className="btn-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                </div>
-                <span style={{ fontSize: "0.82rem", fontWeight: 600 }}>Send Money</span>
-              </Link>
-
-              <Link href="/bill-pay" className="quick-action-link">
-                <div className="btn-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-                </div>
-                <span style={{ fontSize: "0.82rem", fontWeight: 600 }}>Pay Bills</span>
-              </Link>
-
-              <Link href="/deposit" className="quick-action-link">
-                <div className="btn-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                </div>
-                <span style={{ fontSize: "0.82rem", fontWeight: 600 }}>Deposit</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Credit card utilization mini-card */}
-          {accounts.filter((a) => a.type === "credit").map((acc) => {
-            const used = Math.abs(acc.balance);
-            const limit = acc.creditLimit || used;
-            const pct = Math.min(100, Math.round((used / limit) * 100));
-            return (
-              <div className="card" key={acc.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.75rem" }}>
-                  <h3 style={{ fontSize: "1rem" }}>Credit Card</h3>
-                  <span className="text-secondary" style={{ fontSize: "0.78rem" }}>{acc.accountNumber}</span>
-                </div>
-                <p className="text-secondary" style={{ fontSize: "0.8rem" }}>Available credit</p>
-                <p style={{ fontWeight: 700, fontSize: "1.4rem", marginBottom: "0.75rem" }}>${fmt(acc.available)}</p>
-                <div style={{ height: "8px", borderRadius: "999px", background: "var(--bg-tertiary)", overflow: "hidden" }}>
-                  <div style={{ width: `${pct}%`, height: "100%", background: "var(--brand-green)", borderRadius: "999px" }} />
-                </div>
-                <p className="text-secondary" style={{ fontSize: "0.75rem", marginTop: "0.5rem" }}>
-                  ${fmt(used)} of ${fmt(limit)} used ({pct}%)
-                </p>
               </div>
-            );
-          })}
-
-          <div className="hero-panel">
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <h3 style={{ color: "#fff", marginBottom: "0.5rem" }}>Plan & Track</h3>
-              <p style={{ fontSize: "0.85rem", marginBottom: "1.25rem", opacity: 0.9 }}>
-                See where your money goes and build a budget to reach your goals.
-              </p>
-              <Link href="/plan-and-track" className="btn-primary" style={{ background: "#fff", color: "var(--brand-green)", width: "100%" }}>
-                View Spending Summary
-              </Link>
-            </div>
-          </div>
+            </Link>
+          ))}
         </div>
+
+        <Link href="/transactions" className="link-btn" style={{ display: "inline-flex", marginTop: "1.5rem" }}>
+          View recent activity
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+        </Link>
       </div>
     </div>
   );

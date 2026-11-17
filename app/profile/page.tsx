@@ -24,8 +24,8 @@ export default function Profile() {
   const infoRows: [string, string][] = [
     ["Full name", user.fullName],
     ["Email", user.email],
-    ["Mobile", "(206) 555-0182"],
-    ["Mailing address", "1400 Pike Street, Seattle, WA 98101"],
+    ["Mobile", "+233 24 123 4567"],
+    ["Residential address", "12 Ring Road, Osu, Accra"],
     ["Customer since", user.memberSince],
   ];
 
@@ -80,7 +80,7 @@ export default function Profile() {
         <div className="settings-row">
           <div>
             <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>Two-factor authentication</p>
-            <p className="text-secondary" style={{ fontSize: "0.82rem" }}>Text a code to (•••) •••-0182.</p>
+            <p className="text-secondary" style={{ fontSize: "0.82rem" }}>Text a code to +233 •• ••• 4567.</p>
           </div>
           <span className="badge badge-posted" style={{ color: "var(--success)" }}>Enabled</span>
         </div>

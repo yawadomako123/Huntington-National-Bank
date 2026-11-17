@@ -6,27 +6,44 @@ export type Transaction = {
   type: "deposit" | "withdrawal";
   status?: "pending" | "posted";
   category?: string;
+  balanceAfter?: number;
 };
 
-export const currentBalance = 12450.75;
+/** Headline balance of the primary current account. */
+export const currentBalance = 25972.71;
 
+/**
+ * Transaction history (newest first). The net of these movements is chosen so
+ * the running balance reconciles to `currentBalance` on the latest row.
+ */
 export const transactions: Transaction[] = [
-  { id: "TRX-829A10X9B", date: "2026-07-12T10:00:00Z", description: "Wire Transfer - De Beers S.A.", amount: 250000.00, type: "withdrawal", status: "posted", category: "Inventory" },
-  { id: "TRX-412C78L2Q", date: "2026-07-10T14:30:00Z", description: "Incoming Wire - VIP Client", amount: 85000.00, type: "deposit", status: "posted", category: "Sales" },
-  { id: "TRX-195Z34K8R", date: "2026-07-08T09:15:00Z", description: "Brinks Armored Transport", amount: 4500.20, type: "withdrawal", status: "posted", category: "Logistics" },
-  { id: "TRX-820F12N4M", date: "2026-07-05T18:45:00Z", description: "Incoming ACH - Custom Orders", amount: 124500.00, type: "deposit", status: "posted", category: "Sales" },
-  { id: "TRX-741Q90V3E", date: "2026-07-02T12:00:00Z", description: "Retail Space Lease - 5th Ave", amount: 85000.00, type: "withdrawal", status: "posted", category: "Real Estate" },
-  { id: "TRX-553W21Y7P", date: "2026-06-28T08:30:00Z", description: "Rolex SA Invoice #892", amount: 154000.00, type: "withdrawal", status: "posted", category: "Inventory" },
-  { id: "TRX-308H88J1T", date: "2026-06-25T10:00:00Z", description: "Incoming Wire - Sotheby's Auction", amount: 1120000.00, type: "deposit", status: "posted", category: "Sales" },
-  { id: "TRX-914L09D5F", date: "2026-06-22T19:20:00Z", description: "Insurance Premium - Lloyd's", amount: 42000.00, type: "withdrawal", status: "posted", category: "Insurance" },
-  { id: "TRX-120P44M6G", date: "2026-06-20T11:00:00Z", description: "Diamond Cutters Guild", amount: 18500.50, type: "withdrawal", status: "posted", category: "Services" },
-  { id: "TRX-639V71S2H", date: "2026-06-18T14:20:00Z", description: "Marketing & PR Agency", amount: 25000.00, type: "withdrawal", status: "posted", category: "Marketing" },
-  { id: "TRX-447B30X9J", date: "2026-06-15T09:00:00Z", description: "GIA Certification Fees", amount: 12300.30, type: "withdrawal", status: "posted", category: "Certification" },
-  { id: "TRX-882C15L4K", date: "2026-06-12T10:00:00Z", description: "Incoming Wire - Private Collector", amount: 450000.00, type: "deposit", status: "posted", category: "Sales" },
-  { id: "TRX-201N86Z2W", date: "2026-06-10T19:45:00Z", description: "Boutique Design Consultants", amount: 35000.00, type: "withdrawal", status: "posted", category: "Services" },
-  { id: "TRX-719R52F3Q", date: "2026-06-08T13:10:00Z", description: "Staff Payroll", amount: 122800.80, type: "withdrawal", status: "posted", category: "Payroll" },
-  { id: "TRX-993T10H7Y", date: "2026-06-05T16:30:00Z", description: "Transfer from Savings", amount: 500000.00, type: "deposit", status: "posted", category: "Transfer" },
-  { id: "TRX-510M48D1C", date: "2026-06-03T12:00:00Z", description: "Security Systems LLC", amount: 14500.00, type: "withdrawal", status: "posted", category: "Security" },
-  { id: "TRX-284J93P5N", date: "2026-06-01T08:15:00Z", description: "Corporate Taxes", amount: 345500.50, type: "withdrawal", status: "posted", category: "Taxes" },
-  { id: "TRX-605K22V8L", date: "2026-05-28T18:00:00Z", description: "Gold Bullion Supplier", amount: 180200.20, type: "withdrawal", status: "posted", category: "Inventory" },
+  { id: "TRX-7731AQ90", date: "2026-07-25T08:30:00Z", description: "Salary - Absa Payroll", amount: 6500.00, type: "deposit", status: "posted", category: "Income" },
+  { id: "TRX-6620BW12", date: "2026-07-24T19:14:00Z", description: "MoMo Send - Ama (0554****90)", amount: 250.00, type: "withdrawal", status: "posted", category: "Mobile Money" },
+  { id: "TRX-5519CX34", date: "2026-07-24T13:05:00Z", description: "Shoprite Accra Mall", amount: 412.80, type: "withdrawal", status: "posted", category: "Shopping" },
+  { id: "TRX-4418DY56", date: "2026-07-23T10:40:00Z", description: "MTN Data Bundle - 10GB", amount: 45.00, type: "withdrawal", status: "posted", category: "Data & Airtime" },
+  { id: "TRX-3317EZ78", date: "2026-07-22T17:22:00Z", description: "ECG Prepaid - Meter 020****55", amount: 120.00, type: "withdrawal", status: "posted", category: "Bills & Utilities" },
+  { id: "TRX-2216FA90", date: "2026-07-21T09:00:00Z", description: "Incoming Transfer - Kwame Mensah", amount: 1200.00, type: "deposit", status: "posted", category: "Transfer" },
+  { id: "TRX-1115GB12", date: "2026-07-20T20:18:00Z", description: "Bolt Ride - Osu to Legon", amount: 38.00, type: "withdrawal", status: "posted", category: "Transport" },
+  { id: "TRX-9914HC34", date: "2026-07-19T13:47:00Z", description: "KFC Oxford Street", amount: 96.50, type: "withdrawal", status: "posted", category: "Food & Dining" },
+  { id: "TRX-8813ID56", date: "2026-07-18T08:12:00Z", description: "Airtime Top-up - MTN", amount: 20.00, type: "withdrawal", status: "posted", category: "Data & Airtime" },
+  { id: "TRX-7712JE78", date: "2026-07-17T11:30:00Z", description: "MoMo Cash In - MTN 024****118", amount: 500.00, type: "deposit", status: "posted", category: "Mobile Money" },
+  { id: "TRX-6611KF90", date: "2026-07-16T15:05:00Z", description: "Melcom Plus - Groceries", amount: 287.30, type: "withdrawal", status: "posted", category: "Shopping" },
+  { id: "TRX-5510LG12", date: "2026-07-15T07:55:00Z", description: "DSTV Subscription - Compact Plus", amount: 445.00, type: "withdrawal", status: "posted", category: "Bills & Utilities" },
+  { id: "TRX-4419MH34", date: "2026-07-14T18:40:00Z", description: "Uber - Night Market", amount: 52.00, type: "withdrawal", status: "posted", category: "Transport" },
+  { id: "TRX-3318NI56", date: "2026-07-13T12:10:00Z", description: "Refund - Jumia Ghana", amount: 180.00, type: "deposit", status: "posted", category: "Refund" },
+  { id: "TRX-2217OJ78", date: "2026-07-12T09:25:00Z", description: "Ghana Water - GWCL", amount: 95.00, type: "withdrawal", status: "posted", category: "Bills & Utilities" },
+  { id: "TRX-1116PK90", date: "2026-07-11T13:50:00Z", description: "Papaye Fast Food", amount: 60.00, type: "withdrawal", status: "posted", category: "Food & Dining" },
 ];
+
+/**
+ * Annotate a newest-first transaction list with the running account balance
+ * after each movement, so history reconciles to the current balance exactly.
+ */
+export function withRunningBalance(txs: Transaction[], endingBalance: number): Transaction[] {
+  let running = endingBalance;
+  return txs.map((tx) => {
+    const annotated = { ...tx, balanceAfter: running };
+    running = running - (tx.type === "deposit" ? tx.amount : -tx.amount);
+    return annotated;
+  });
+}

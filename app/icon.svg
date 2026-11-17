@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#000000"/>
+  <circle cx="256" cy="256" r="150" fill="#e4002b"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#ffffff" stroke-width="26"
+    stroke-dasharray="205 118" stroke-dashoffset="-103" transform="rotate(-90 256 256)"/>
+  <text x="256" y="256" text-anchor="middle" dominant-baseline="central"
+    font-family="Inter, Arial, sans-serif" font-size="128" font-weight="800"
+    letter-spacing="-5" fill="#ffffff">absa</text>
+</svg>

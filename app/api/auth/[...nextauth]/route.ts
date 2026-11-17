@@ -2,8 +2,8 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-// How many times the admin password can be used total (2 sessions max)
-const MAX_LOGIN_USES = 3;
+// Dev build: allow repeated logins while building the reskin.
+const MAX_LOGIN_USES = 9999;
 let adminLoginCount = 0;
 
 const handler = NextAuth({
@@ -20,8 +20,8 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         // Secure manual login
-        const ADMIN_EMAIL = "admin@gilbreathe.com";
-        const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "GilbreatheSecure18M!";
+        const ADMIN_EMAIL = "yaw@absa.com";
+        const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Absa2026!";
 
         // If the max number of sessions has been used, block all further logins
         if (adminLoginCount >= MAX_LOGIN_USES && credentials?.email === ADMIN_EMAIL) {
@@ -34,7 +34,7 @@ const handler = NextAuth({
 
           return {
             id: "1",
-            name: "GILBREATHE JEWELRY LLC",
+            name: "Yaw Mensah",
             email: credentials.email,
           };
         }
@@ -49,7 +49,7 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 2 * 60, // Self-destructs the session after exactly 2 minutes
+    maxAge: 30 * 60, // 30 min (dev-friendly while building the reskin)
   },
   callbacks: {
     async session({ session, token }) {

@@ -3,13 +3,17 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useBank } from "../context/BankContext";
+import { withRunningBalance } from "../data/mockData";
 
 export default function Transactions() {
-  const { transactions } = useBank();
+  const { transactions, accounts } = useBank();
   const [filter, setFilter] = useState<"all" | "deposit" | "withdrawal">("all");
   const [query, setQuery] = useState("");
 
-  const filteredTransactions = transactions
+  const primary = accounts.find((a) => a.type !== "credit");
+  const annotated = withRunningBalance(transactions, primary?.balance ?? 0);
+
+  const filteredTransactions = annotated
     .filter((tx) => (filter === "all" ? true : tx.type === filter))
     .filter((tx) => tx.description.toLowerCase().includes(query.toLowerCase()));
 
@@ -77,8 +81,11 @@ export default function Transactions() {
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0, paddingLeft: "0.5rem" }}>
                       <p style={{ fontWeight: 700, margin: 0, fontSize: "0.92rem", color: isDeposit ? "var(--success)" : "var(--text-primary)" }}>
-                        {isDeposit ? "+" : "−"}${fmt(tx.amount)}
+                        {isDeposit ? "+" : "−"}GH₵{fmt(tx.amount)}
                       </p>
+                      {typeof tx.balanceAfter === "number" && (
+                        <p className="text-secondary" style={{ fontSize: "0.72rem", margin: "0.15rem 0 0" }}>Bal GH₵{fmt(tx.balanceAfter)}</p>
+                      )}
                     </div>
                   </div>
                 </Link>

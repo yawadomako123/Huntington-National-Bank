@@ -8,7 +8,7 @@ export default function Transfers() {
   const { accounts, transferFunds } = useBank();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<"internal" | "external" | "zelle">("external");
+  const [activeTab, setActiveTab] = useState<"internal" | "external" | "momo">("external");
 
   const [fromAccount, setFromAccount] = useState("");
   const [toAccount, setToAccount] = useState("");
@@ -22,11 +22,11 @@ export default function Transfers() {
 
     let transferDesc = description;
     if (activeTab === "external") {
-      transferDesc = description ? `External Transfer: ${description}` : `External Transfer to Account ${toAccount}`;
-    } else if (activeTab === "zelle") {
-      transferDesc = description ? `Zelle to ${toAccount}: ${description}` : `Zelle to ${toAccount}`;
+      transferDesc = description ? `Bank Transfer: ${description}` : `Transfer to Account ${toAccount}`;
+    } else if (activeTab === "momo") {
+      transferDesc = description ? `MoMo to ${toAccount}: ${description}` : `MoMo to ${toAccount}`;
     } else {
-      transferDesc = description || "Internal Transfer";
+      transferDesc = description || "Own Account Transfer";
     }
 
     transferFunds(fromAccount, toAccount, parseFloat(amount), transferDesc);
@@ -40,15 +40,15 @@ export default function Transfers() {
   };
 
   type TabType = {
-    id: "internal" | "external" | "zelle";
+    id: "internal" | "external" | "momo";
     label: string;
     icon?: string;
   };
 
   const tabs: TabType[] = [
-    { id: "internal", label: "Internal" },
-    { id: "external", label: "External Account" },
-    { id: "zelle", label: "Send with Zelle", icon: "Z" }
+    { id: "internal", label: "Own Accounts" },
+    { id: "external", label: "Other Bank" },
+    { id: "momo", label: "MoMo", icon: "M" }
   ];
 
   return (
@@ -65,7 +65,7 @@ export default function Transfers() {
             }}
             style={{
               padding: "0.75rem 1.25rem",
-              borderBottom: activeTab === tab.id ? (tab.id === "zelle" ? "3px solid #741BE1" : "3px solid var(--accent-secondary)") : "3px solid transparent",
+              borderBottom: activeTab === tab.id ? "3px solid var(--accent-pink)" : "3px solid transparent",
               color: activeTab === tab.id ? "var(--text-primary)" : "var(--text-secondary)",
               fontWeight: activeTab === tab.id ? 600 : 500,
               display: "flex",
@@ -74,7 +74,7 @@ export default function Transfers() {
               background: "none"
             }}
           >
-            {tab.icon && <span style={{ backgroundColor: "#741BE1", color: "white", padding: "0 6px", borderRadius: "4px", fontWeight: "bold", fontSize: "0.8rem" }}>{tab.icon}</span>}
+            {tab.icon && <span style={{ backgroundColor: "var(--accent-pink)", color: "white", padding: "0 6px", borderRadius: "4px", fontWeight: "bold", fontSize: "0.8rem" }}>{tab.icon}</span>}
             {tab.label}
           </button>
         ))}
@@ -92,7 +92,7 @@ export default function Transfers() {
           <select className="form-input" value={fromAccount} onChange={e => setFromAccount(e.target.value)} required>
             <option value="">Select Account</option>
             {accounts.filter(a => a.type !== "credit").map(acc => (
-              <option key={acc.id} value={acc.id}>{acc.name} - ${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</option>
+              <option key={acc.id} value={acc.id}>{acc.name} - GH₵{acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</option>
             ))}
           </select>
         </div>
@@ -121,11 +121,11 @@ export default function Transfers() {
           </div>
         ) : (
           <div className="form-group">
-            <label className="form-label">Send To (Email or Mobile)</label>
+            <label className="form-label">MoMo Number (Recipient)</label>
             <input
-              type="text"
+              type="tel"
               className="form-input"
-              placeholder="e.g. john@example.com"
+              placeholder="e.g. 024 123 4567"
               value={toAccount}
               onChange={e => setToAccount(e.target.value)}
               required
@@ -136,7 +136,7 @@ export default function Transfers() {
         <div className="form-group">
           <label className="form-label">Amount</label>
           <div style={{ position: "relative" }}>
-            <span style={{ position: "absolute", left: "1rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-secondary)", fontWeight: 500 }}>$</span>
+            <span style={{ position: "absolute", left: "1rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-secondary)", fontWeight: 500 }}>GH₵</span>
             <input
               type="number"
               className="form-input"
@@ -145,7 +145,7 @@ export default function Transfers() {
               step="0.01"
               value={amount}
               onChange={e => setAmount(e.target.value)}
-              style={{ paddingLeft: "2rem" }}
+              style={{ paddingLeft: "3.2rem" }}
               required
             />
           </div>
@@ -162,8 +162,8 @@ export default function Transfers() {
           />
         </div>
 
-        <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "1rem", backgroundColor: activeTab === "zelle" ? "#741BE1" : "" }}>
-          {activeTab === "zelle" ? "Send Money" : "Confirm Transfer"}
+        <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "1rem" }}>
+          {activeTab === "momo" ? "Send Money" : "Confirm Transfer"}
         </button>
       </form>
     </div>

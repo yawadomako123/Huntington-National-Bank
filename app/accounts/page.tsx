@@ -13,7 +13,7 @@ export default function Accounts() {
     <div className="container">
       <h1 style={{ marginBottom: "0.35rem" }}>Your Accounts</h1>
       <p className="text-secondary" style={{ fontSize: "0.9rem", marginBottom: "1.75rem" }}>
-        Overview of all your Vertex National Bank accounts.
+        Overview of all your Absa accounts.
       </p>
 
       <div style={{ display: "grid", gap: "1.25rem" }}>
@@ -24,7 +24,7 @@ export default function Accounts() {
                 <span className="pill">{label(account.type)}</span>
                 <h3 style={{ margin: "0.6rem 0 0.25rem", wordBreak: "break-word" }}>{account.name}</h3>
                 <p className="text-secondary" style={{ fontSize: "0.82rem", wordBreak: "break-all" }}>
-                  Account {account.accountNumber} · Routing {account.routingNumber}
+                  Account {account.accountNumber} · SWIFT {account.routingNumber}
                 </p>
               </div>
               <div style={{ textAlign: "right", flexShrink: 0 }}>
@@ -32,13 +32,13 @@ export default function Accounts() {
                   {account.type === "credit" ? "Current Balance" : "Available Balance"}
                 </p>
                 <h2 style={{ color: account.type === "credit" && account.balance < 0 ? "var(--danger)" : "var(--text-primary)", margin: "0.15rem 0", fontSize: "clamp(1.1rem, 5vw, 1.35rem)" }}>
-                  {account.type === "credit" && account.balance < 0 ? "−" : ""}${fmt(Math.abs(account.balance))}
+                  {account.type === "credit" && account.balance < 0 ? "−" : ""}GH₵{fmt(Math.abs(account.balance))}
                 </h2>
                 {account.apy && (
-                  <span className="text-success" style={{ fontSize: "0.8rem", fontWeight: 600 }}>{account.apy}% APY</span>
+                  <span className="text-success" style={{ fontSize: "0.8rem", fontWeight: 600 }}>{account.apy}% p.a.</span>
                 )}
                 {account.creditLimit && (
-                  <span className="text-secondary" style={{ fontSize: "0.78rem", display: "block" }}>${fmt(account.available)} avail. of ${fmt(account.creditLimit)}</span>
+                  <span className="text-secondary" style={{ fontSize: "0.78rem", display: "block" }}>GH₵{fmt(account.available)} avail. of GH₵{fmt(account.creditLimit)}</span>
                 )}
               </div>
             </div>

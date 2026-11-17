@@ -27,7 +27,7 @@ export default function BillPay() {
     <div className="container" style={{ maxWidth: "640px" }}>
       <h1 style={{ marginBottom: "0.35rem" }}>Bill Pay</h1>
       <p className="text-secondary" style={{ fontSize: "0.9rem", marginBottom: "1.75rem" }}>
-        Pay a biller directly from your Vertex account.
+        Pay a biller directly from your Absa account.
       </p>
 
       {success && (
@@ -46,14 +46,14 @@ export default function BillPay() {
           <select className="form-input" value={fromAccount} onChange={(e) => setFromAccount(e.target.value)} required>
             <option value="">Select account</option>
             {accounts.filter((a) => a.type !== "credit").map((acc) => (
-              <option key={acc.id} value={acc.id}>{acc.name} — ${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</option>
+              <option key={acc.id} value={acc.id}>{acc.name} — GH₵{acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</option>
             ))}
           </select>
         </div>
 
         <div className="form-group">
           <label className="form-label">Biller Name</label>
-          <input type="text" className="form-input" placeholder="e.g. City Power & Light" value={biller} onChange={(e) => setBiller(e.target.value)} required />
+          <input type="text" className="form-input" placeholder="e.g. ECG, Ghana Water, DSTV" value={biller} onChange={(e) => setBiller(e.target.value)} required />
         </div>
 
         <div className="form-group">

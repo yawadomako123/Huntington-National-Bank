@@ -41,7 +41,7 @@ export default function Deposit() {
           <select className="form-input" value={toAccount} onChange={(e) => setToAccount(e.target.value)} required>
             <option value="">Select account</option>
             {accounts.filter((a) => a.type !== "credit").map((acc) => (
-              <option key={acc.id} value={acc.id}>{acc.name} — ${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</option>
+              <option key={acc.id} value={acc.id}>{acc.name} — GH₵{acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</option>
             ))}
           </select>
         </div>

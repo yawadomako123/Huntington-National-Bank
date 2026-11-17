@@ -17,20 +17,20 @@ export default function ExportStatement({ transactions, balance }: ExportStateme
     
     // Header
     doc.setFontSize(20);
-    doc.setTextColor(11, 19, 43); // Oxford Blue
-    doc.text("Bank Statement", 14, 22);
-    
+    doc.setTextColor(228, 0, 43); // Absa red
+    doc.text("Absa Bank Ghana - Statement", 14, 22);
+
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
     doc.text(`Timeframe: Last ${timeframe} Days`, 14, 38);
-    doc.text(`Current Balance: $${balance.toLocaleString()}`, 14, 44);
+    doc.text(`Current Balance: GH₵${balance.toLocaleString()}`, 14, 44);
 
     // Table
     const tableData = transactions.map(t => [
       new Date(t.date).toLocaleDateString(),
       t.description,
-      t.type === "deposit" ? `+$${t.amount.toFixed(2)}` : `-$${t.amount.toFixed(2)}`
+      t.type === "deposit" ? `+GH₵${t.amount.toFixed(2)}` : `-GH₵${t.amount.toFixed(2)}`
     ]);
 
     autoTable(doc, {
@@ -38,7 +38,7 @@ export default function ExportStatement({ transactions, balance }: ExportStateme
       head: [["Date", "Description", "Amount"]],
       body: tableData,
       theme: 'striped',
-      headStyles: { fillColor: [58, 80, 107] }, // YInMn Blue
+      headStyles: { fillColor: [228, 0, 43] }, // Absa red
     });
 
     doc.save(`Bank_Statement_${timeframe}_Days.pdf`);

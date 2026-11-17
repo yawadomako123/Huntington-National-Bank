@@ -21,7 +21,7 @@ export default function PlanAndTrack() {
   const budget = 4000;
   const pctOfBudget = Math.min(100, Math.round((totalSpending / budget) * 100));
 
-  const palette = ["var(--brand-green)", "#7ac142", "#16875a", "#4d8a1f", "#0c6b3f", "#9db0a7"];
+  const palette = ["#e4002b", "#ff4d6d", "#ff8aa3", "#a3001f", "#ff6b9d", "#c70039"];
 
   return (
     <div className="container" style={{ maxWidth: "900px" }}>
@@ -35,12 +35,12 @@ export default function PlanAndTrack() {
           <p style={{ fontSize: "0.8rem", fontWeight: 600, opacity: 0.85, textTransform: "uppercase", letterSpacing: "0.04em" }}>
             Total Spending
           </p>
-          <p style={{ fontSize: "2.4rem", fontWeight: 800, margin: "0.3rem 0 0.75rem" }}>${fmt(totalSpending)}</p>
+          <p style={{ fontSize: "2.4rem", fontWeight: 800, margin: "0.3rem 0 0.75rem" }}>GH₵{fmt(totalSpending)}</p>
           <div style={{ height: "8px", borderRadius: "999px", background: "rgba(255,255,255,0.2)", overflow: "hidden", maxWidth: "420px" }}>
             <div style={{ width: `${pctOfBudget}%`, height: "100%", background: "#fff", borderRadius: "999px" }} />
           </div>
           <p style={{ fontSize: "0.82rem", opacity: 0.9, marginTop: "0.5rem" }}>
-            {pctOfBudget}% of your ${fmt(budget)} budget · {pctOfBudget < 100 ? "on track" : "over budget"}
+            {pctOfBudget}% of your GH₵{fmt(budget)} budget · {pctOfBudget < 100 ? "on track" : "over budget"}
           </p>
         </div>
       </div>
@@ -55,7 +55,7 @@ export default function PlanAndTrack() {
                 <li key={name} style={{ marginBottom: "1rem" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.35rem" }}>
                     <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>{name}</span>
-                    <strong style={{ fontSize: "0.88rem" }}>${fmt(value)}</strong>
+                    <strong style={{ fontSize: "0.88rem" }}>GH₵{fmt(value)}</strong>
                   </div>
                   <div style={{ height: "6px", borderRadius: "999px", background: "var(--bg-tertiary)", overflow: "hidden" }}>
                     <div style={{ width: `${pct}%`, height: "100%", background: palette[i % palette.length], borderRadius: "999px" }} />
@@ -71,7 +71,7 @@ export default function PlanAndTrack() {
           <div style={{ marginBottom: "1.5rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
               <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>Emergency Fund</span>
-              <span className="text-secondary" style={{ fontSize: "0.85rem" }}>$10,000 / $15,000</span>
+              <span className="text-secondary" style={{ fontSize: "0.85rem" }}>GH₵2,000 / GH₵3,000</span>
             </div>
             <div style={{ width: "100%", height: "8px", background: "var(--bg-tertiary)", borderRadius: "999px", overflow: "hidden" }}>
               <div style={{ width: "66%", height: "100%", background: "var(--success)", borderRadius: "999px" }}></div>
@@ -80,8 +80,8 @@ export default function PlanAndTrack() {
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-              <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>Vacation</span>
-              <span className="text-secondary" style={{ fontSize: "0.85rem" }}>$1,200 / $3,000</span>
+              <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>New Laptop</span>
+              <span className="text-secondary" style={{ fontSize: "0.85rem" }}>GH₵1,200 / GH₵3,000</span>
             </div>
             <div style={{ width: "100%", height: "8px", background: "var(--bg-tertiary)", borderRadius: "999px", overflow: "hidden" }}>
               <div style={{ width: "40%", height: "100%", background: "var(--brand-green)", borderRadius: "999px" }}></div>

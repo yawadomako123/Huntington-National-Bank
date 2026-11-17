@@ -48,7 +48,7 @@ export default function TransactionHistory({ transactions, title = "Recent Activ
 
               <div style={{ textAlign: "right", flexShrink: 0, paddingLeft: "0.5rem" }}>
                 <p style={{ fontWeight: 700, margin: 0, fontSize: "0.92rem", color: isDeposit ? "var(--success)" : "var(--text-primary)" }}>
-                  {isDeposit ? "+" : "−"}${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {isDeposit ? "+" : "−"}GH₵{tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
             </div>

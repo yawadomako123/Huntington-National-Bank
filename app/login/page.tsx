@@ -3,25 +3,51 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import AbsaLogo from "../components/AbsaLogo";
+
+// Demo credentials used by the simulated biometric (Face ID) login.
+const DEMO_EMAIL = "yaw@absa.com";
+const DEMO_PASSWORD = "Absa2026!";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [bio, setBio] = useState<"idle" | "scanning" | "success">("idle");
   const router = useRouter();
 
-  const handleCredentialsLogin = async (e: React.FormEvent) => {
+  const handleBiometric = () => {
+    setError("");
+    setBio("scanning");
+    // Simulated Face ID: scan animation, then authenticate with the demo account.
+    setTimeout(async () => {
+      const res = await signIn("credentials", { redirect: false, email: DEMO_EMAIL, password: DEMO_PASSWORD });
+      if (res?.error) {
+        setBio("idle");
+        setError("Biometric sign-in failed. Use your password.");
+      } else {
+        setBio("success");
+        setTimeout(() => router.push("/"), 650);
+      }
+    }, 1700);
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Please enter your email and password.");
+    if (!username || !password) {
+      setError("Please enter your username and password.");
       return;
     }
-
+    setLoading(true);
     const res = await signIn("credentials", {
       redirect: false,
-      email,
+      email: username.trim(),
       password,
     });
+    setLoading(false);
 
     if (res?.error) {
       setError("Invalid login credentials.");
@@ -30,104 +56,111 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl: "/" });
-  };
-
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "var(--bg-primary)",
-      backgroundImage: "linear-gradient(135deg, rgba(0, 114, 80, 0.05) 0%, rgba(0, 0, 0, 0) 100%)",
-      padding: "2rem"
-    }}>
-      <div style={{
-        width: "100%",
-        maxWidth: "420px",
-        backgroundColor: "var(--bg-secondary)",
-        borderRadius: "16px",
-        padding: "2.5rem 2rem",
-        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
-        border: "1px solid var(--border-glass)"
-      }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <div style={{ display: "inline-flex", gap: "2px", marginBottom: "0.5rem" }}>
-            <div style={{ width: "24px", height: "24px", backgroundColor: "var(--brand-green)" }}></div>
-            <div style={{ width: "24px", height: "24px", backgroundColor: "var(--accent-secondary)" }}></div>
-          </div>
-          <h1 style={{ color: "var(--brand-green)", margin: 0, fontSize: "1.5rem", fontWeight: 800, letterSpacing: "1px" }}>HUNTINGTON</h1>
-          <div style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "3px", color: "var(--text-secondary)" }}>NATIONAL BANK</div>
+    <div style={{ minHeight: "100vh", background: "#000", padding: "1.5rem 1.4rem 2.5rem", display: "flex", flexDirection: "column" }}>
+      {/* Top bar */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+        <button aria-label="Menu" style={{ color: "#fff" }}>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="3" y1="7" x2="21" y2="7" /><line x1="3" y1="13" x2="21" y2="13" /><line x1="3" y1="19" x2="21" y2="19" /></svg>
+        </button>
+        <Link href="/open-account" style={{ color: "var(--accent-pink)", fontWeight: 600, fontSize: "1rem" }}>Register</Link>
+      </div>
+
+      {/* Logo */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.75rem" }}>
+        <AbsaLogo size={84} />
+      </div>
+
+      {/* Headline + CTA */}
+      <h1 style={{ textAlign: "center", fontSize: "1.5rem", lineHeight: 1.3, fontWeight: 800, marginBottom: "1.75rem" }}>
+        Skip the queues and the calls. Open a new account online in only a few minutes.
+      </h1>
+
+      <Link href="/open-account" className="btn-outline" style={{ alignSelf: "center", padding: "0.85rem 2.5rem", marginBottom: "1.75rem", borderColor: "#fff", color: "#fff" }}>
+        Open account now
+      </Link>
+
+      <div className="dots" style={{ marginBottom: "2.25rem" }}>
+        <span className="dot active" /><span className="dot" /><span className="dot" />
+      </div>
+
+      {/* Login form */}
+      <h2 style={{ textAlign: "center", fontSize: "1.15rem", fontWeight: 700, marginBottom: "1.25rem" }}>
+        Log in with your online banking credentials
+      </h2>
+
+      {error && (
+        <div style={{ background: "rgba(255, 90, 95, 0.12)", color: "#ff8a8d", padding: "0.75rem", borderRadius: "10px", marginBottom: "1rem", fontSize: "0.85rem", textAlign: "center" }}>
+          {error}
         </div>
+      )}
 
-        <h2 style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center", fontWeight: 600 }}>Sign in to Online Banking</h2>
-
-        {error && (
-          <div style={{ backgroundColor: "rgba(220, 38, 38, 0.1)", color: "#dc2626", padding: "0.75rem", borderRadius: "8px", marginBottom: "1.5rem", fontSize: "0.875rem", textAlign: "center" }}>
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleCredentialsLogin}>
-          <div className="form-group">
-            <label className="form-label">Online ID / Email</label>
-            <input 
-              type="email" 
-              className="form-input" 
-              placeholder="e.g. admin@gilbreathe.com" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Passcode</label>
-            <input 
-              type="password" 
-              className="form-input" 
-              placeholder="Enter your passcode" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.5rem", fontSize: "0.875rem" }}>
-            <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "var(--text-secondary)", cursor: "pointer" }}>
-              <input type="checkbox" /> Save Online ID
-            </label>
-            <a href="#" style={{ color: "var(--brand-green)", textDecoration: "none", fontWeight: 500 }}>Forgot ID/Passcode?</a>
-          </div>
-          <button type="submit" className="btn-primary" style={{ width: "100%", marginBottom: "1rem" }}>
-            Sign In
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          className="form-input"
+          placeholder="Username"
+          autoCapitalize="none"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{ marginBottom: "1rem", padding: "1.15rem 1rem" }}
+        />
+        <div style={{ position: "relative", marginBottom: "1.25rem" }}>
+          <input
+            type={showPw ? "text" : "password"}
+            className="form-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ padding: "1.15rem 1rem", paddingRight: "4rem" }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPw((s) => !s)}
+            style={{ position: "absolute", right: "1rem", top: "50%", transform: "translateY(-50%)", color: "var(--accent-pink)", fontWeight: 600, fontSize: "0.95rem" }}
+          >
+            {showPw ? "hide" : "show"}
           </button>
-        </form>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem", margin: "1.5rem 0", color: "var(--text-secondary)" }}>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--border-solid)" }}></div>
-          <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>Or continue with</span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--border-solid)" }}></div>
         </div>
 
-        <button 
-          onClick={handleGoogleLogin} 
-          className="btn-outline" 
-          style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem" }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          Sign in with Google
+        <p style={{ textAlign: "center", marginBottom: "1.75rem", fontSize: "0.95rem", color: "#fff" }}>
+          Forgot your <span style={{ color: "var(--accent-pink)", fontWeight: 600 }}>username</span>
+          {" / "}
+          <span style={{ color: "var(--accent-pink)", fontWeight: 600 }}>password</span> ?
+        </p>
+
+        <button type="submit" className="btn-primary" style={{ width: "100%", marginBottom: "1rem", padding: "1.15rem" }} disabled={loading}>
+          {loading ? "Logging in…" : "Log in"}
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-          Not enrolled? <a href="#" style={{ color: "var(--brand-green)", textDecoration: "none", fontWeight: 500 }}>Sign up for an online account</a>
-        </p>
-      </div>
+        <button type="button" className="btn-outline" style={{ width: "100%", padding: "1.1rem", display: "flex", gap: "0.6rem" }} onClick={handleBiometric}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2" /><path d="M20 8V6a2 2 0 0 0-2-2h-2" /><path d="M4 16v2a2 2 0 0 0 2 2h2" /><path d="M20 16v2a2 2 0 0 1-2 2h-2" /><path d="M9 9h.01" /><path d="M15 9h.01" /><path d="M9 15c.83.67 1.94 1 3 1s2.17-.33 3-1" /></svg>
+          Biometric login
+        </button>
+      </form>
+
+      {bio !== "idle" && (
+        <div className="bio-overlay">
+          <div className={`bio-face ${bio === "success" ? "ok" : ""}`}>
+            {bio === "success" ? (
+              <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#35c759" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+            ) : (
+              <svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2" /><path d="M20 8V6a2 2 0 0 0-2-2h-2" /><path d="M4 16v2a2 2 0 0 0 2 2h2" /><path d="M20 16v2a2 2 0 0 1-2 2h-2" /><path d="M9 9h.01" /><path d="M15 9h.01" /><path d="M9 15c.83.67 1.94 1 3 1s2.17-.33 3-1" /></svg>
+            )}
+            {bio === "scanning" && <span className="bio-scanline" />}
+          </div>
+          <p style={{ marginTop: "1.5rem", fontWeight: 600, fontSize: "1.05rem" }}>
+            {bio === "success" ? "Verified" : "Scanning your face…"}
+          </p>
+          {bio === "scanning" && (
+            <button onClick={() => setBio("idle")} style={{ marginTop: "1rem", color: "var(--accent-pink)", fontWeight: 600 }}>Cancel</button>
+          )}
+        </div>
+      )}
+
+      <p style={{ textAlign: "center", marginTop: "1.5rem", fontSize: "0.78rem", color: "var(--text-muted)" }}>
+        Demo login — Username: <span style={{ color: "var(--text-secondary)" }}>yaw@absa.com</span> · Password: <span style={{ color: "var(--text-secondary)" }}>Absa2026!</span>
+      </p>
     </div>
   );
 }

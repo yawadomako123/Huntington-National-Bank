@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AbsaLogo from "./AbsaLogo";
 
 export default function Splash() {
   const [show, setShow] = useState(true);
@@ -24,7 +23,8 @@ export default function Splash() {
   return (
     <div className="splash">
       <div className="splash-mark">
-        <AbsaLogo size={110} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-roundel.png" alt="Absa" width={120} height={120} style={{ display: "block" }} />
       </div>
     </div>
   );

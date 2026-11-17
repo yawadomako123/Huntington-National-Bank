@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import AbsaLogo from "../components/AbsaLogo";
 
 // Demo credentials used by the simulated biometric (Face ID) login.
 const DEMO_EMAIL = "yaw@absa.com";
@@ -68,7 +67,8 @@ export default function Login() {
 
       {/* Logo */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.75rem" }}>
-        <AbsaLogo size={84} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-roundel.png" alt="Absa" width={92} height={92} style={{ display: "block" }} />
       </div>
 
       {/* Headline + CTA */}
